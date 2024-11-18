@@ -1,14 +1,17 @@
-from fastapi import APIRouter
-
-from fastapi import status
-from fastapi.exceptions import HTTPException
+from fastapi import APIRouter, status, HTTPException, Depends
 
 from services.patients_service import PatientsService
 from models.patient import Patient
+from utils.login_required import login_required
 
 patients_router = APIRouter(
     prefix="/patients",
-    tags=["patients"]
+    tags=["patients"],
+    dependencies=[
+        Depends(
+            login_required
+        )
+    ]
 )
 
 @patients_router.get("")
@@ -29,13 +32,13 @@ def get_patient(patient_id: str) -> Patient:
     return patient
 
 
-@patients_router.post("")
+@patients_router.post("", status_code=status.HTTP_201_CREATED)
 def create_patient(patient: Patient) -> dict:
     created_patient: dict = PatientsService().create_patient(patient)
     return created_patient
 
 
-@patients_router.put("/{patient_id}")
+@patients_router.put("/{patient_id}", status_code=status.HTTP_200_OK)
 def update_patient(patient_id: str, patient: Patient) -> dict:
     response: dict | None = PatientsService().update_patient(patient_id, patient)
 
@@ -47,7 +50,7 @@ def update_patient(patient_id: str, patient: Patient) -> dict:
     return response
 
 
-@patients_router.delete("/{patient_id}")
+@patients_router.delete("/{patient_id}", status_code=status.HTTP_200_OK)
 def delete_patient(patient_id: str) -> dict:
     patient: dict | None = PatientsService().delete_patient(patient_id)
 

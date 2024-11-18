@@ -1,9 +1,5 @@
-from pydantic import BaseModel, AfterValidator
-from bson import ObjectId
-from typing import Annotated
-
-ObjectIdStr = Annotated[str, AfterValidator(lambda v: ObjectId.is_valid(v))]
-
+from pydantic import BaseModel, Field
+from models.pyObjectId import PyObjectId
 
 class PersonalData(BaseModel):
     name: str
@@ -19,6 +15,6 @@ class PersonalData(BaseModel):
     address: dict
 
 class Patient(BaseModel):
-    _id: ObjectIdStr | None = None
+    id: PyObjectId | None = Field(None, alias="_id")
     record: str
     personalData: PersonalData

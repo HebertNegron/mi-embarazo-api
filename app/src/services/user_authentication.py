@@ -7,9 +7,12 @@ class UserAuthenticationService:
     def get_user_by_email(self, email: str) -> UserModel | None:
         with MongoConnection() as db:
             user = db.users.find_one({"email": email})
-
+            
             if user:
-                return UserModel(**user)
+                return UserModel(
+                    **user,
+                    id=str(user["_id"])
+                )
 
     def save_user(self, user: UserModel) -> UserModel:
         with MongoConnection() as db:

@@ -1,11 +1,12 @@
 from pydantic import BaseModel, Field
 from models.pyObjectId import PyObjectId
 
-class UserModel(BaseModel):
+class Doctor(BaseModel):
     id: PyObjectId | None = Field(None, alias="_id")
     name: str
-    last_name: str
+    major: str
     email: str
-    password: str | None = None
-    profile_image: str | None = None
-    
+    phone: str
+    gender: str
+    office: str
+    professional_license: str

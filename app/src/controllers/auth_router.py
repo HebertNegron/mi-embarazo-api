@@ -41,7 +41,7 @@ def login_user(
 
 @auth_router.post("/signup", status_code=status.HTTP_201_CREATED)
 def signup_user(user: UserModel) -> BearerToken:
-    # try:
+    try:
         user = auth_service.signup(user)
 
         return BearerToken(
@@ -52,8 +52,8 @@ def signup_user(user: UserModel) -> BearerToken:
             user_name=user.name,
             user_profile_image=user.profile_image or "",
         )
-    # except Exception:
-    #     raise HTTPException(
-    #         status_code=status.HTTP_409_CONFLICT,
-    #         detail="This email address is already in use",
-    #     )
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="This email address is already in use",
+        )
