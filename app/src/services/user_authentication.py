@@ -1,35 +1,35 @@
-from models.user_model import UserModel
+from models.doctor import Doctor
 from utils.mongo_conn import MongoConnection
 
 from bson import ObjectId
 
 class UserAuthenticationService:
-    def get_user_by_email(self, email: str) -> UserModel | None:
+    def get_user_by_email(self, email: str) -> Doctor | None:
         with MongoConnection() as db:
-            user = db.users.find_one({"email": email})
+            user = db.doctors.find_one({"email": email})
             
             if user:
-                return UserModel(
-                    **user,
-                    id=str(user["_id"])
+                return Doctor(
+                    **user
                 )
 
-    def save_user(self, user: UserModel) -> UserModel:
+    def save_user(self, user: Doctor) -> Doctor:
         with MongoConnection() as db:
             user_data: dict = {
                 "email": user.email,
-                "last_name": user.last_name,
                 "name": user.name,
                 "password": user.password,
+                "major": user.major,
+                "phone": user.phone,
+                "gender": user.gender,
+                "office": user.office,
+                "professional_license": user.professional_license
             }
             
-            if user.id:
-                user_id = ObjectId(user.id)
-            else:
-                user_id = None
+            user_id = user.id if user.id is not None else ObjectId()
 
-            result = db.users.update_one(
-                {"_id": user_id} if user_id else {},
+            result = db.doctors.update_one(
+                {"_id": user_id},
                 {"$set": user_data},
                 upsert=True
             )
@@ -37,6 +37,6 @@ class UserAuthenticationService:
             if result.upserted_id:
                 user_id = result.upserted_id
             
-            new_user:dict = db.users.find_one({"_id": user_id}) or {}
+            new_user:dict = db.doctors.find_one({"_id": user_id}) or {}
 
-            return UserModel(**new_user)
+            return Doctor(**new_user)

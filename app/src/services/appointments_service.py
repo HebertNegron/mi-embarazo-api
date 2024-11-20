@@ -19,9 +19,19 @@ class AppointmentsService:
 
             return Appointment(**appointment)
         
-    def create_appointment(self, appointment: Appointment) -> dict:
+    def get_appointments_by_doctor(self, doctor_id: str) -> list[Appointment]:
         with MongoConnection() as db:
-            result = db.appointments.insert_one(appointment.model_dump())
+            appointments = db.appointments.find({"doctor": ObjectId(doctor_id)})
+            return list(Appointment(
+                **appointment
+            ) for appointment in appointments)
+        
+    def create_appointment(self, appointment: Appointment) -> dict:
+        appointment_data = appointment.model_dump()
+        appointment_data["doctor"] = ObjectId(appointment.doctor)
+
+        with MongoConnection() as db:
+            result = db.appointments.insert_one(appointment_data)
 
             return {
                 "_id": str(result.inserted_id)

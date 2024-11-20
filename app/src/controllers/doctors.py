@@ -1,7 +1,12 @@
 from fastapi import APIRouter, status, HTTPException, Depends
+from services import AuthService, UserAuthenticationService
 from models.doctor import Doctor
 from services.doctors_service import DoctorsService
 from utils.login_required import login_required
+from utils.json_web_token_tools import JsonWebTokenTools
+from utils.password_encryptor import PasswordEncryptor
+from models.bearer_token import BearerToken
+
 
 doctors_router = APIRouter(
     prefix="/doctors",
@@ -11,6 +16,10 @@ doctors_router = APIRouter(
             login_required
         )
     ]
+)
+auth_service = AuthService(
+    password_encryptor=PasswordEncryptor(),
+    user_service=UserAuthenticationService(),
 )
 
 @doctors_router.get("")
@@ -32,9 +41,22 @@ def get_doctor(doctor_id: str) -> Doctor:
 
 
 @doctors_router.post("", status_code=status.HTTP_201_CREATED)
-def create_doctor(doctor: Doctor) -> dict:
-    created_doctor: dict = DoctorsService().create_doctor(doctor)
-    return created_doctor
+def create_doctor( doctor: Doctor) -> BearerToken:
+    try:
+        user = auth_service.signup(doctor)
+
+        return BearerToken(
+            access_token=JsonWebTokenTools.create_access_token(user.email),
+            user_email=user.email,
+            user_id=str(user.id),
+            user_name=user.name,
+        )
+        
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="This email address is already in use",
+        )
 
 
 @doctors_router.put("/{doctor_id}", status_code=status.HTTP_200_OK)

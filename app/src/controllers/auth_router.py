@@ -3,7 +3,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from models import UserModel, BearerToken
+from models.doctor import Doctor
+from models import BearerToken
 from utils.password_encryptor import PasswordEncryptor
 
 from services import AuthService, UserAuthenticationService
@@ -27,9 +28,7 @@ def login_user(
             access_token=JsonWebTokenTools.create_access_token(user.email),
             user_email=user.email,
             user_id=str(user.id),
-            user_last_name=user.last_name,
             user_name=user.name,
-            user_profile_image=user.profile_image or "",
         )
     except Exception:
         raise HTTPException(
@@ -40,7 +39,7 @@ def login_user(
 
 
 @auth_router.post("/signup", status_code=status.HTTP_201_CREATED)
-def signup_user(user: UserModel) -> BearerToken:
+def signup_user(user: Doctor) -> BearerToken:
     try:
         user = auth_service.signup(user)
 
@@ -48,9 +47,7 @@ def signup_user(user: UserModel) -> BearerToken:
             access_token=JsonWebTokenTools.create_access_token(user.email),
             user_email=user.email,
             user_id=str(user.id),
-            user_last_name=user.last_name,
             user_name=user.name,
-            user_profile_image=user.profile_image or "",
         )
     except Exception:
         raise HTTPException(

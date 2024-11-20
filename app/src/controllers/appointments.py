@@ -19,6 +19,10 @@ def get_appointments() -> list[Appointment]:
     appointments: list[Appointment] = AppointmentsService().get_appointments()
     return appointments
 
+@appointments_router.get("/doctors/{doctor_id}")
+def get_appointments_by_doctor(doctor_id: str) -> list[Appointment]:
+    appointments: list[Appointment] = AppointmentsService().get_appointments_by_doctor(doctor_id)
+    return appointments
 
 @appointments_router.get("/{appointment_id}")
 def get_appointment(appointment_id: str) -> Appointment:

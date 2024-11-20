@@ -6,6 +6,6 @@ class UserModel(BaseModel):
     name: str
     last_name: str
     email: str
-    password: str | None = None
+    password: str
     profile_image: str | None = None
     

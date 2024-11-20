@@ -1,5 +1,8 @@
 from pymongo import MongoClient
+from dotenv import load_dotenv
 from os import environ
+
+load_dotenv()
 
 MONGO_CONN_URI = environ['MONGO_CONN_URI']
 MONGO_DATABASE = environ['MONGO_DATABASE']

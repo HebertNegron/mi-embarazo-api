@@ -8,5 +8,6 @@ class Doctor(BaseModel):
     email: str
     phone: str
     gender: str
+    password: str
     office: str
     professional_license: str

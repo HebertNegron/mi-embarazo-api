@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, status
 
 from fastapi.security import OAuth2PasswordBearer
-from models.user_model import UserModel
+from models.doctor import Doctor
 from utils.json_web_token_tools import JsonWebTokenTools
 from services.user_authentication import UserAuthenticationService
 
@@ -30,8 +30,16 @@ async def login_required(token: Annotated[str, Depends(OAuth2PasswordBearer(toke
             raise credentials_exception
 
 
-        return UserModel(
-            email=user.email, id=user.id, last_name=user.last_name, name=user.name
+        return Doctor(
+            _id=user.id,
+            password=user.password,
+            email=user.email,
+            name=user.name,
+            major=user.major,
+            phone=user.phone,
+            gender=user.gender,
+            office=user.office,
+            professional_license=user.professional_license
         )
     except JWTError:
         raise credentials_exception

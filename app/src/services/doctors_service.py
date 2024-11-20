@@ -19,6 +19,7 @@ class DoctorsService:
 
             return Doctor(**doctor)
         
+    ##Unused
     def create_doctor(self, doctor: Doctor) -> dict:
         with MongoConnection() as db:
             result = db.doctors.insert_one(doctor.model_dump())
