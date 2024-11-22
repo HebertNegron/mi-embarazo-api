@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, HTTPException, Depends
+from fastapi import APIRouter, Body, status, HTTPException, Depends
 from services import AuthService, UserAuthenticationService
 from models.doctor import Doctor
 from services.doctors_service import DoctorsService
@@ -81,5 +81,15 @@ def delete_doctor(doctor_id: str) -> dict:
             detail="Doctor not found",
         )
     return doctor
-    
+
+@doctors_router.post("/get_schedule/{doctor_id}", status_code=status.HTTP_200_OK)
+def get_schedule(doctor_id: str, date: str = Body(embed=True)) -> list:
+    schedule: list = DoctorsService().get_schedule(doctor_id, date)
+
+    if not schedule:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Schedule not found",
+        )
+    return schedule
     

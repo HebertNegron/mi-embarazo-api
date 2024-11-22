@@ -1,6 +1,7 @@
 from bson import ObjectId
 from models.appointment import Appointment
 from utils.mongo_conn import MongoConnection
+from datetime import datetime
 
 class AppointmentsService:
     def get_appointments(self) -> list[Appointment]:
@@ -29,6 +30,7 @@ class AppointmentsService:
     def create_appointment(self, appointment: Appointment) -> dict:
         appointment_data = appointment.model_dump()
         appointment_data["doctor"] = ObjectId(appointment.doctor)
+        appointment_data["date"] = datetime.strptime(appointment.date, "%Y-%m-%d")
 
         with MongoConnection() as db:
             result = db.appointments.insert_one(appointment_data)

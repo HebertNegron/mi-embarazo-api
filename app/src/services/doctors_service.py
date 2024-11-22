@@ -1,6 +1,8 @@
+import time
 from bson import ObjectId
 from models.doctor import Doctor
 from utils.mongo_conn import MongoConnection
+from datetime import datetime, timedelta
 
 class DoctorsService:
 
@@ -42,3 +44,18 @@ class DoctorsService:
             result =db.doctors.delete_one({"_id": ObjectId(doctor_id)})
         
             return {"_id": str(doctor_id)} if result.deleted_count == 1 else None
+        
+    def get_schedule(self, doctor_id: str, date: str) -> list[str]:
+        isodate = datetime.strptime(date, "%Y-%m-%d")
+        with MongoConnection() as db:
+            query = {"doctor": ObjectId(doctor_id), "date": isodate}
+            doctor_appointments = list(db.appointments.find(query))
+
+            slots = []
+            for i in range(8, 18):
+                slots.append(str(i) + ":00")
+
+            for appointment in doctor_appointments:
+                slots.remove(appointment["time"])
+
+            return slots
