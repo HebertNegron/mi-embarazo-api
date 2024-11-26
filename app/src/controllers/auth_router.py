@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from models.doctor import Doctor
+from models.user_model import UserModel
 from models import BearerToken
 from utils.password_encryptor import PasswordEncryptor
 
@@ -29,6 +29,7 @@ def login_user(
             user_email=user.email,
             user_id=str(user.id),
             user_name=user.name,
+            role=user.role
         )
     except Exception:
         raise HTTPException(
@@ -39,18 +40,20 @@ def login_user(
 
 
 @auth_router.post("/signup", status_code=status.HTTP_201_CREATED)
-def signup_user(user: Doctor) -> BearerToken:
-    try:
-        user = auth_service.signup(user)
+def signup_user(user: UserModel) -> BearerToken:
+    # try:
+    user = auth_service.signup(user)
 
-        return BearerToken(
-            access_token=JsonWebTokenTools.create_access_token(user.email),
-            user_email=user.email,
-            user_id=str(user.id),
-            user_name=user.name,
-        )
-    except Exception:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="This email address is already in use",
-        )
+    return BearerToken(
+        access_token=JsonWebTokenTools.create_access_token(user.email),
+        user_email=user.email,
+        user_id=str(user.id),
+        user_name=user.name,
+        role=user.role
+    )
+    # except Exception:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_409_CONFLICT,
+    #         detail="This email address is already in use",
+    #     )
+    

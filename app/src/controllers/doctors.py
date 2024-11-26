@@ -29,35 +29,35 @@ def get_doctors() -> list[Doctor]:
     return doctors
 
 
-@doctors_router.get("/by_id")
-def get_doctor(credentials: UserModel = Depends(login_required)) -> Doctor:
-    doctor: Doctor | None = DoctorsService().get_doctor(credentials.id)
+# @doctors_router.get("/by_id")
+# def get_doctor(credentials: UserModel = Depends(login_required)) -> Doctor:
+#     doctor: Doctor | None = DoctorsService().get_doctor(credentials.id)
 
-    if not doctor:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Doctor not found",
-        )
-    return doctor
+#     if not doctor:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail="Doctor not found",
+#         )
+#     return doctor
 
 
-@doctors_router.post("", status_code=status.HTTP_201_CREATED)
-def create_doctor( doctor: Doctor) -> BearerToken:
-    try:
-        user = auth_service.signup(doctor)
+# @doctors_router.post("", status_code=status.HTTP_201_CREATED)
+# def create_doctor( doctor: Doctor) -> BearerToken:
+#     try:
+#         user = auth_service.signup(doctor)
 
-        return BearerToken(
-            access_token=JsonWebTokenTools.create_access_token(user.email),
-            user_email=user.email,
-            user_id=str(user.id),
-            user_name=user.name,
-        )
+#         return BearerToken(
+#             access_token=JsonWebTokenTools.create_access_token(user.email),
+#             user_email=user.email,
+#             user_id=str(user.id),
+#             user_name=user.name,
+#         )
         
-    except Exception:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="This email address is already in use",
-        )
+#     except Exception:
+#         raise HTTPException(
+#             status_code=status.HTTP_409_CONFLICT,
+#             detail="This email address is already in use",
+#         )
 
 
 @doctors_router.put("/{doctor_id}", status_code=status.HTTP_200_OK)

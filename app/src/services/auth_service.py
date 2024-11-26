@@ -1,5 +1,5 @@
 from utils.password_encryptor import PasswordEncryptor
-from models.doctor import Doctor
+from models.user_model import UserModel
 from .user_authentication import UserAuthenticationService
 
 class AuthService:
@@ -11,7 +11,7 @@ class AuthService:
         self.password_encryptor = password_encryptor
         self.user_service = user_service
 
-    def login(self, email: str, password: str) -> Doctor:
+    def login(self, email: str, password: str) -> UserModel:
         
         user = self.user_service.get_user_by_email(email)
 
@@ -22,16 +22,17 @@ class AuthService:
 
         return user
 
-    def signup(self, user: Doctor) -> Doctor:
+    def signup(self, user: UserModel) -> UserModel:
         if self.user_service.get_user_by_email(user.email):
             raise Exception("This email address is already in use")
 
         registered_user = self.user_service.save_user(
-            Doctor(
+            UserModel(
                 _id=None,
                 email=user.email,
                 name=user.name,
                 password=self.password_encryptor.get_password_hash(user.password),
+                role=user.role,
                 major=user.major,
                 phone=user.phone,
                 gender=user.gender,

@@ -1,34 +1,38 @@
-from models.doctor import Doctor
+from models.user_model import UserModel
 from utils.mongo_conn import MongoConnection
 
 from bson import ObjectId
 
 class UserAuthenticationService:
-    def get_user_by_email(self, email: str) -> Doctor | None:
+    def get_user_by_email(self, email: str) -> UserModel | None:
         with MongoConnection() as db:
-            user = db.doctors.find_one({"email": email})
+            user = db.users.find_one({"email": email})
             
             if user:
-                return Doctor(
+                return UserModel(
                     **user
                 )
 
-    def save_user(self, user: Doctor) -> Doctor:
+    def save_user(self, user: UserModel) -> UserModel:
+
         with MongoConnection() as db:
             user_data: dict = {
                 "email": user.email,
                 "name": user.name,
                 "password": user.password,
-                "major": user.major,
-                "phone": user.phone,
-                "gender": user.gender,
-                "office": user.office,
-                "professional_license": user.professional_license
+                "role": user.role
             }
+
+            if user.role == 'doctor':
+                user_data["major"] = user.major
+                user_data["phone"] = user.phone
+                user_data["gender"] = user.gender
+                user_data["office"] = user.office
+                user_data["professional_license"] = user.professional_license
             
             user_id = user.id if user.id is not None else ObjectId()
 
-            result = db.doctors.update_one(
+            result = db.users.update_one(
                 {"_id": user_id},
                 {"$set": user_data},
                 upsert=True
@@ -37,6 +41,6 @@ class UserAuthenticationService:
             if result.upserted_id:
                 user_id = result.upserted_id
             
-            new_user:dict = db.doctors.find_one({"_id": user_id}) or {}
+            new_user: dict = db.users.find_one({"_id": user_id}) or {}
 
-            return Doctor(**new_user)
+            return UserModel(**new_user)
