@@ -56,4 +56,3 @@ def signup_user(user: UserModel) -> BearerToken:
             status_code=status.HTTP_409_CONFLICT,
             detail="This email address is already in use",
         )
-    

@@ -1,6 +1,7 @@
 from bson import ObjectId
 from models.pyObjectId import PyObjectId
 from models.doctor import Doctor
+from models.user_model import UserModel
 from utils.mongo_conn import MongoConnection
 from datetime import datetime
 
@@ -8,18 +9,18 @@ class DoctorsService:
 
     def get_doctors(self) -> list[Doctor]:
         with MongoConnection() as db:
-            doctors = db.doctors.find()
+            doctors = db.users.find({"role": "doctor"})
 
             return list(Doctor(**doctor) for doctor in doctors)
         
-    def get_doctor(self, doctor_id: PyObjectId) -> Doctor | None:
+    def get_doctor(self, doctor_id: PyObjectId | None) -> UserModel | None:
         with MongoConnection() as db:
-            doctor = db.doctors.find_one({"_id": doctor_id})
+            doctor = db.users.find_one({"_id": doctor_id})
 
             if not doctor:
                 return None
 
-            return Doctor(**doctor)
+            return UserModel(**doctor)
         
     ##Unused
     def create_doctor(self, doctor: Doctor) -> dict:
@@ -31,10 +32,11 @@ class DoctorsService:
             } 
         
     def update_doctor(self, doctor_id: str, doctor: Doctor) -> dict | None:
+        update_object = doctor.model_dump(exclude={"id", "password"})
         with MongoConnection() as db:
-            result = db.doctors.update_one(
+            result = db.users.update_one(
                 {"_id": ObjectId(doctor_id)},
-                {"$set": doctor.model_dump()}
+                {"$set": update_object}
             )
 
             return {"_id": str(doctor_id)} if result.modified_count == 1 else None
@@ -46,7 +48,7 @@ class DoctorsService:
             return {"_id": str(doctor_id)} if result.deleted_count == 1 else None
         
     def get_schedule(self, doctor_id: str, date: str) -> list[str]:
-        isodate = datetime.strptime(date, "%Y-%m-%d")
+        isodate = datetime.strptime(date, "%d-%m-%Y")
         with MongoConnection() as db:
             query = {"doctor": ObjectId(doctor_id), "date": isodate}
             doctor_appointments = list(db.appointments.find(query))

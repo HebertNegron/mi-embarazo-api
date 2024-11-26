@@ -19,6 +19,15 @@ class PatientsService:
 
             return Patient(**patient)
         
+    def get_patient_by_phone(self, phone: str) -> dict | None:
+        with MongoConnection() as db:
+            patient = db.patients.find_one({"personalData.phone": phone})
+
+            if not patient:
+                return None
+
+            return patient
+        
     def create_patient(self, patient: Patient) -> dict:
         with MongoConnection() as db:
             result = db.patients.insert_one(patient.model_dump())

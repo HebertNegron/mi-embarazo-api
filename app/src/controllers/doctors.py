@@ -4,9 +4,7 @@ from services import AuthService, UserAuthenticationService
 from models.doctor import Doctor
 from services.doctors_service import DoctorsService
 from utils.login_required import login_required
-from utils.json_web_token_tools import JsonWebTokenTools
 from utils.password_encryptor import PasswordEncryptor
-from models.bearer_token import BearerToken
 
 
 doctors_router = APIRouter(
@@ -29,16 +27,16 @@ def get_doctors() -> list[Doctor]:
     return doctors
 
 
-# @doctors_router.get("/by_id")
-# def get_doctor(credentials: UserModel = Depends(login_required)) -> Doctor:
-#     doctor: Doctor | None = DoctorsService().get_doctor(credentials.id)
+@doctors_router.get("/by_id")
+def get_doctor(credentials: UserModel = Depends(login_required)) -> UserModel:
+    doctor: UserModel | None = DoctorsService().get_doctor(credentials.id)
 
-#     if not doctor:
-#         raise HTTPException(
-#             status_code=status.HTTP_404_NOT_FOUND,
-#             detail="Doctor not found",
-#         )
-#     return doctor
+    if not doctor:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Doctor not found",
+        )
+    return doctor
 
 
 # @doctors_router.post("", status_code=status.HTTP_201_CREATED)

@@ -17,4 +17,10 @@ class PersonalData(BaseModel):
 class Patient(BaseModel):
     id: PyObjectId | None = Field(None, alias="_id")
     record: str
-    personalData: PersonalData
+    name: str
+    personalData: PersonalData | None = None
+    current_phone: str | None = None
+    doctor_options: list | None = None
+    schedule_options: list | None = None
+    doctor: str | None = None
+    date: str | None = None

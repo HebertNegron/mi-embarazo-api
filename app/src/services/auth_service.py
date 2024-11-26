@@ -12,8 +12,8 @@ class AuthService:
         self.user_service = user_service
 
     def login(self, email: str, password: str) -> UserModel:
-        
         user = self.user_service.get_user_by_email(email)
+
 
         if not user or not self.password_encryptor.verify_password_hash(
             password, user.password
@@ -33,11 +33,11 @@ class AuthService:
                 name=user.name,
                 password=self.password_encryptor.get_password_hash(user.password),
                 role=user.role,
-                major=user.major,
+                specialization=user.specialization,
                 phone=user.phone,
                 gender=user.gender,
                 office=user.office,
-                professional_license=user.professional_license
+                license=user.license
             )
         )
         return registered_user
