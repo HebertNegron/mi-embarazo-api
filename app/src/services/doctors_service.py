@@ -1,8 +1,8 @@
-import time
 from bson import ObjectId
+from models.pyObjectId import PyObjectId
 from models.doctor import Doctor
 from utils.mongo_conn import MongoConnection
-from datetime import datetime, timedelta
+from datetime import datetime
 
 class DoctorsService:
 
@@ -12,9 +12,9 @@ class DoctorsService:
 
             return list(Doctor(**doctor) for doctor in doctors)
         
-    def get_doctor(self, doctor_id: str) -> Doctor | None:
+    def get_doctor(self, doctor_id: PyObjectId) -> Doctor | None:
         with MongoConnection() as db:
-            doctor = db.doctors.find_one({"_id": ObjectId(doctor_id)})
+            doctor = db.doctors.find_one({"_id": doctor_id})
 
             if not doctor:
                 return None

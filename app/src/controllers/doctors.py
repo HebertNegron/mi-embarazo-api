@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Body, status, HTTPException, Depends
+from models.user_model import UserModel
 from services import AuthService, UserAuthenticationService
 from models.doctor import Doctor
 from services.doctors_service import DoctorsService
@@ -28,9 +29,9 @@ def get_doctors() -> list[Doctor]:
     return doctors
 
 
-@doctors_router.get("/{doctor_id}")
-def get_doctor(doctor_id: str) -> Doctor:
-    doctor: Doctor | None = DoctorsService().get_doctor(doctor_id)
+@doctors_router.get("/by_id")
+def get_doctor(credentials: UserModel = Depends(login_required)) -> Doctor:
+    doctor: Doctor | None = DoctorsService().get_doctor(credentials.id)
 
     if not doctor:
         raise HTTPException(
