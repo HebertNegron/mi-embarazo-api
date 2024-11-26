@@ -1,4 +1,5 @@
 from bson import ObjectId
+from models.appointment_request import AppointmentRequest
 from models.appointment import Appointment
 from utils.mongo_conn import MongoConnection
 from datetime import datetime
@@ -27,7 +28,7 @@ class AppointmentsService:
                 **appointment
             ) for appointment in appointments)
         
-    def create_appointment(self, appointment: Appointment) -> dict:
+    def create_appointment(self, appointment: AppointmentRequest) -> dict:
         appointment_data = appointment.model_dump()
         appointment_data["doctor"] = ObjectId(appointment.doctor)
         appointment_data["date"] = datetime.strptime(appointment.date, "%Y-%m-%d")
