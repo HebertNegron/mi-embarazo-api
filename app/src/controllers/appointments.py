@@ -1,4 +1,6 @@
 from fastapi import APIRouter, status, HTTPException, Depends
+from models.user_model import UserModel
+from models.appointment_request import AppointmentRequest
 from models.appointment import Appointment
 from services.appointments_service import AppointmentsService
 from utils.login_required import login_required
@@ -19,9 +21,9 @@ def get_appointments() -> list[Appointment]:
     appointments: list[Appointment] = AppointmentsService().get_appointments()
     return appointments
 
-@appointments_router.get("/doctors/{doctor_id}")
-def get_appointments_by_doctor(doctor_id: str) -> list[Appointment]:
-    appointments: list[Appointment] = AppointmentsService().get_appointments_by_doctor(doctor_id)
+@appointments_router.get("/doctors")
+def get_appointments_by_doctor(credentials: UserModel = Depends(login_required)) -> list[Appointment]:
+    appointments: list[Appointment] = AppointmentsService().get_appointments_by_doctor(credentials.id)
     return appointments
 
 @appointments_router.get("/{appointment_id}")
@@ -37,7 +39,7 @@ def get_appointment(appointment_id: str) -> Appointment:
 
 
 @appointments_router.post("", status_code=status.HTTP_201_CREATED)
-def create_appointment(appointment: Appointment) -> dict:
+def create_appointment(appointment: AppointmentRequest) -> dict:
     created_appointment: dict = AppointmentsService().create_appointment(appointment)
     return created_appointment
 

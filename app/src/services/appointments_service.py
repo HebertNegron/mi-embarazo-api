@@ -1,4 +1,5 @@
 from bson import ObjectId
+from models.pyObjectId import PyObjectId
 from models.appointment_request import AppointmentRequest
 from models.appointment import Appointment
 from utils.mongo_conn import MongoConnection
@@ -21,9 +22,9 @@ class AppointmentsService:
 
             return Appointment(**appointment)
         
-    def get_appointments_by_doctor(self, doctor_id: str) -> list[Appointment]:
+    def get_appointments_by_doctor(self, doctor_id: PyObjectId) -> list[Appointment]:
         with MongoConnection() as db:
-            appointments = db.appointments.find({"doctor": ObjectId(doctor_id)})
+            appointments = db.appointments.find({"doctor": doctor_id})
             return list(Appointment(
                 **appointment
             ) for appointment in appointments)
