@@ -11,3 +11,9 @@ class Appointment(BaseModel):
     time: str
     date_type: str 
     status: str
+    weight: float | None = None
+    bloodPressure: str | None = None
+    fetalHeartRate: str | None = None
+    fetalStatus: str | None = None
+    observations: str | None = None
+    prescription: str | None = None
