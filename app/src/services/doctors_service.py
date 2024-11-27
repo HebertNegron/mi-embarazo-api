@@ -25,7 +25,7 @@ class DoctorsService:
         
     def delete_doctor(self, doctor_id: str) -> dict | None:
         with MongoConnection() as db:
-            result =db.doctors.delete_one({"_id": ObjectId(doctor_id)})
+            result =db.users.delete_one({"_id": ObjectId(doctor_id)})
         
             return {"_id": str(doctor_id)} if result.deleted_count == 1 else None
         
