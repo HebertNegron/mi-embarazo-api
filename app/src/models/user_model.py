@@ -16,3 +16,15 @@ class UserModel(BaseModel):
     gender: str | None = None
     office: str | None = None
     license: str | None = None
+
+class UserModelRequest(BaseModel):
+    name: str | None = None
+    password: str | None = None
+    role: UserRoles | None = None
+    profile_image: str | None = None
+    specialization: str | None = None
+    email: str | None = None
+    phone: str | None = None
+    gender: str | None = None
+    office: str | None = None
+    license: str | None = None

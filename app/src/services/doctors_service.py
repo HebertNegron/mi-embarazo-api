@@ -13,24 +13,6 @@ class DoctorsService:
 
             return list(Doctor(**doctor) for doctor in doctors)
         
-    def get_doctor(self, doctor_id: PyObjectId | None) -> UserModel | None:
-        with MongoConnection() as db:
-            doctor = db.users.find_one({"_id": doctor_id})
-
-            if not doctor:
-                return None
-
-            return UserModel(**doctor)
-        
-    ##Unused
-    def create_doctor(self, doctor: Doctor) -> dict:
-        with MongoConnection() as db:
-            result = db.doctors.insert_one(doctor.model_dump())
-
-            return {
-                "_id": str(result.inserted_id)
-            } 
-        
     def update_doctor(self, doctor_id: str, doctor: Doctor) -> dict | None:
         update_object = doctor.model_dump(exclude={"id", "password"})
         with MongoConnection() as db:

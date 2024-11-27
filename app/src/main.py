@@ -8,7 +8,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from controllers import auth_router, patients_router, doctors_router, appointments_router
+from controllers import auth_router, patients_router, doctors_router, appointments_router, users_router
 from integrations.twilio_webhook import twilio_router  # Importar el webhook de Twilio
 from utils.openapi_tags import openapi_tags
 
@@ -25,6 +25,7 @@ app.include_router(patients_router, tags=["patients"])
 app.include_router(doctors_router, tags=["doctors"])
 app.include_router(appointments_router, tags=["appointments"])
 app.include_router(twilio_router, tags=["twilio"])  # Incluir el router del webhook de Twilio
+app.include_router(users_router, tags=["users"])
 
 @app.get("/")
 def read_root():
