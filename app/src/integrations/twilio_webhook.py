@@ -86,7 +86,7 @@ async def whatsapp_webhook(request: Request):
                 elif current_step == "registrar_telefono":
                     # Guardar el número de celular proporcionado
                     conversation_state[user_number]["telefono"] = user_message
-                    db.patients.update_one({"current_phone": form_data["From"]},{"$set": {"personalData": {"phone": user_message}}})
+                    db.patients.update_one({"current_phone": form_data["From"]},{"$set": {"personalData.phone": user_message}})
                     conversation_state[user_number]["step"] = "seleccionar_doctor"
                     doctors = list(db.users.find({"role": "doctor"}))
                     doctor_options = [f"{idx}. {x['name']}" for idx, x in enumerate(doctors, start=1)]
@@ -100,10 +100,7 @@ async def whatsapp_webhook(request: Request):
                     try:
                         # Buscar al paciente en la base de datos usando el servicio
                         patient = patients_service.get_patient_by_phone(user_message)
-                        import logging
-                        logging.warning(patient)
                         db.patients.update_one({"personalData.phone": user_message},{"$set": {"current_phone": form_data["From"]}})
-                        logging.warning(form_data["From"])
                         if patient:
                             conversation_state[user_number]["patient"] = patient  # Guardar el paciente en el estado
                             conversation_state[user_number]["step"] = "seleccionar_doctor"  # Avanzar al siguiente paso
