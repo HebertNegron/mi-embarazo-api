@@ -50,3 +50,14 @@ class PatientsService:
             result =db.patients.delete_one({"_id": ObjectId(patient_id)})
         
             return {"_id": str(patient_id)} if result.deleted_count == 1 else None
+    
+    def save_last_appointment(self, patient_id: str, appointment_id: str, appointment_date: str) -> dict:
+        with MongoConnection() as db:
+            result = db.patients.update_one(
+                {"_id": ObjectId(patient_id)},
+                {"$set": {
+                    "last_appointment_id": appointment_id,
+                    "last_appointment": appointment_date
+                }}
+            )
+            return {"_id": str(patient_id)} if result.modified_count == 1 else None

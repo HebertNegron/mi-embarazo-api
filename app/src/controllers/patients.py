@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, HTTPException, Depends
+from fastapi import APIRouter, Body, status, HTTPException, Depends
 
 from services.patients_service import PatientsService
 from models.patient import Patient
@@ -60,5 +60,18 @@ def delete_patient(patient_id: str) -> dict:
             detail="Patient not found",
         )
     return patient
-    
-    
+
+@patients_router.put("/{patient_id}/appointments", status_code=status.HTTP_200_OK)
+def save_last_appointment(patient_id: str, request: dict = Body(...)) -> dict:
+    appointment_id = request.get("appointment_id")
+    appointment_date = request.get("appointment_date")
+
+    if not appointment_id or not appointment_date:
+        raise HTTPException(status_code=422, detail="Missing required fields: appointment_id or appointment_date")
+
+    response: dict | None = PatientsService().save_last_appointment(
+        patient_id,
+        appointment_id,
+        appointment_date
+    )
+    return response

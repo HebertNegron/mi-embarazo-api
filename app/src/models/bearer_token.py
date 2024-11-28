@@ -6,4 +6,5 @@ class BearerToken(BaseModel):
     user_email: str
     user_id: str
     user_name: str
+    user_phone: str
     role: str
