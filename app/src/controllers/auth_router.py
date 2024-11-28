@@ -50,7 +50,7 @@ def signup_user(user: UserModel) -> BearerToken:
             user_email=user.email,
             user_id=str(user.id),
             user_name=user.name,
-            role=user.role
+            role=user.role,
         )
     except Exception:
         raise HTTPException(
