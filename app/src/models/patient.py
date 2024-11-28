@@ -40,6 +40,7 @@ class Patient(BaseModel):
     record: str | None = None
     name: str | None = None
     personalData: PersonalData | None = None
+    last_appointment_id: PyObjectId | None = None
     last_appointment: str | None = None
     current_phone: str | None = None
     doctor_options: list | None = None

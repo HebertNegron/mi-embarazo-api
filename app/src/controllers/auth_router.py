@@ -27,6 +27,7 @@ def login_user(
         return BearerToken(
             access_token=JsonWebTokenTools.create_access_token(user.email),
             user_email=user.email,
+            user_phone=user.phone,
             user_id=str(user.id),
             user_name=user.name,
             role=user.role
