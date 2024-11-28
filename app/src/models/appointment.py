@@ -5,6 +5,7 @@ from models.pyObjectId import PyObjectId
 class Appointment(BaseModel):
     _id: PyObjectId | None = None
     patient: PyObjectId
+    patient_name: str
     doctor: PyObjectId
     file: PyObjectId | None = None
     date: str | datetime
