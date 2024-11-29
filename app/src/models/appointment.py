@@ -1,11 +1,12 @@
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from models.pyObjectId import PyObjectId
 
 class Appointment(BaseModel):
-    _id: PyObjectId | None = None
+    id: PyObjectId | None = Field(None, alias="_id")
     patient: PyObjectId
     patient_name: str | None = None
+    record: str | None = None
     doctor: PyObjectId
     file: PyObjectId | None = None
     date: str | datetime

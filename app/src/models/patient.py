@@ -12,7 +12,7 @@ class PersonalData(BaseModel):
     curp: str | None = None
     maritalStatus: str | None = None
     occupation: str | None = None
-    address: dict | None = None
+    address: str | None = None
     maritalStatus: str | None = None
     street: str | None = None
     municipality: str | None = None
