@@ -35,6 +35,11 @@ class AppointmentsService:
             appointments = db.appointments.find({'doctor': str(doctor_id)})
             return [Appointment(**appointment) for appointment in appointments]
         
+    def get_appointments_by_patient(self, patient_id: str | None) -> list[Appointment]:
+        with MongoConnection() as db:
+            appointments = db.appointments.find({'patient': str(patient_id)})
+            return [Appointment(**appointment) for appointment in appointments]
+        
     def create_appointment(self, appointment: AppointmentRequest) -> dict:
         appointment_data = appointment.model_dump()
         appointment_data["_id"] = ObjectId()  # Generate a new ObjectId for the document
