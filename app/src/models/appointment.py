@@ -7,7 +7,7 @@ class Appointment(BaseModel):
     patient: PyObjectId
     patient_name: str | None = None
     record: str | None = None
-    doctor: PyObjectId
+    doctor: str
     file: PyObjectId | None = None
     date: str | datetime
     time: str

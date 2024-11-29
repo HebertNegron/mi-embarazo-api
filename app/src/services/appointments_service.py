@@ -30,11 +30,9 @@ class AppointmentsService:
 
             return Appointment(**appointment)
         
-    def get_appointments_by_doctor(self, doctor_id: PyObjectId | None) -> list[Appointment]:
+    def get_appointments_by_doctor(self, doctor_id: str | None) -> list[Appointment]:
         with MongoConnection() as db:
-            print("Doctor ID:", doctor_id)
-            appointments = db.appointments.find({'doctor': doctor_id})
-            
+            appointments = db.appointments.find({'doctor': str(doctor_id)})
             return [Appointment(**appointment) for appointment in appointments]
         
     def create_appointment(self, appointment: AppointmentRequest) -> dict:
