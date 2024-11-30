@@ -10,6 +10,12 @@ class PatientsService:
 
             return list(Patient(**patient) for patient in patients)
         
+    def get_patients_by_doctor(self, doctor_id: str | None) -> list[Patient]:
+        with MongoConnection() as db:
+            patients = db.patients.find({"doctor": str(doctor_id)})
+
+            return list(Patient(**patient) for patient in patients)
+        
     def get_patient(self, patient_id: str) -> Patient | None:
         with MongoConnection() as db:
             patient = db.patients.find_one({"_id": ObjectId(patient_id)})
