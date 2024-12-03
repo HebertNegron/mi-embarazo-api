@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Body, status, HTTPException, Depends
 
+from models.pyObjectId import PyObjectId
 from services.patients_service import PatientsService
 from models.user_model import UserModel
 from models.patient import Patient
@@ -21,7 +22,7 @@ def get_patients() -> list[Patient]:
     return patients
 
 
-@patients_router.get("/{patient_id}")
+@patients_router.get("/doctors")
 def get_patients_by_doctor(credentials : UserModel = Depends(login_required)) -> list[Patient]:
     patients: list[Patient] | None = PatientsService().get_patients_by_doctor(credentials.id)
 
@@ -31,7 +32,8 @@ def get_patients_by_doctor(credentials : UserModel = Depends(login_required)) ->
             detail="Patient not found",
         )
     return patients
-@patients_router.get("/")
+
+@patients_router.get("/{patient_id}")
 def get_patient(patient_id: str) -> Patient:
     patient: Patient | None = PatientsService().get_patient(patient_id)
 

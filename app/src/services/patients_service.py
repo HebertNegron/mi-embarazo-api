@@ -1,4 +1,5 @@
 from bson import ObjectId
+from models.pyObjectId import PyObjectId
 from models.patient import Patient
 from utils.mongo_conn import MongoConnection
 
