@@ -26,6 +26,11 @@ def get_appointments_by_doctor(credentials: UserModel = Depends(login_required))
     appointments: list[Appointment] = AppointmentsService().get_appointments_by_doctor(credentials.id)
     return appointments
 
+@appointments_router.get("/patients/{patient_id}")
+def get_appointments_by_patients(patient_id: str) -> list[Appointment]:
+    appointments: list[Appointment] = AppointmentsService().get_appointments_by_patient(patient_id)
+    return appointments
+
 @appointments_router.get("/{appointment_id}")
 def get_appointment(appointment_id: str) -> Appointment:
     appointment: Appointment | None = AppointmentsService().get_appointment(appointment_id)

@@ -1,4 +1,5 @@
 from bson import ObjectId
+from models.pyObjectId import PyObjectId
 from models.patient import Patient
 from utils.mongo_conn import MongoConnection
 
@@ -7,6 +8,12 @@ class PatientsService:
     def get_patients(self) -> list[Patient]:
         with MongoConnection() as db:
             patients = db.patients.find()
+
+            return list(Patient(**patient) for patient in patients)
+        
+    def get_patients_by_doctor(self, doctor_id: str | None) -> list[Patient]:
+        with MongoConnection() as db:
+            patients = db.patients.find({"doctor": str(doctor_id)})
 
             return list(Patient(**patient) for patient in patients)
         

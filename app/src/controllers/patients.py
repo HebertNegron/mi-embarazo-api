@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Body, status, HTTPException, Depends
 
+from models.pyObjectId import PyObjectId
 from services.patients_service import PatientsService
+from models.user_model import UserModel
 from models.patient import Patient
 from utils.login_required import login_required
 
@@ -19,6 +21,17 @@ def get_patients() -> list[Patient]:
     patients: list[Patient] = PatientsService().get_patients()
     return patients
 
+
+@patients_router.get("/doctors")
+def get_patients_by_doctor(credentials : UserModel = Depends(login_required)) -> list[Patient]:
+    patients: list[Patient] | None = PatientsService().get_patients_by_doctor(credentials.id)
+
+    if not patients:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Patient not found",
+        )
+    return patients
 
 @patients_router.get("/{patient_id}")
 def get_patient(patient_id: str) -> Patient:

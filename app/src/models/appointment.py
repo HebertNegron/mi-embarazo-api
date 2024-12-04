@@ -4,15 +4,15 @@ from models.pyObjectId import PyObjectId
 
 class Appointment(BaseModel):
     id: PyObjectId | None = Field(None, alias="_id")
-    patient: PyObjectId
+    patient: PyObjectId | None = None
     patient_name: str | None = None
     record: str | None = None
-    doctor: PyObjectId
+    doctor: PyObjectId | None = None
     file: PyObjectId | None = None
-    date: str | datetime
-    time: str
-    date_type: str 
-    status: str
+    date: str | datetime | None = None
+    time: str | None = None
+    date_type: str | None = None
+    status: str | None = None
     weight: float | None = None
     bloodPressure: str | None = None
     fetalHeartRate: str | None = None
