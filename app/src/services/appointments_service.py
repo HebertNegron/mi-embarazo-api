@@ -1,5 +1,4 @@
 from bson import ObjectId
-from models.pyObjectId import PyObjectId
 from models.appointment_request import AppointmentRequest
 from models.appointment import Appointment
 from utils.mongo_conn import MongoConnection
@@ -63,16 +62,17 @@ class AppointmentsService:
             return inserted_document
         
     def update_appointment(self, appointment_id: str, appointment: Appointment) -> dict | None:
+        update_object = appointment.model_dump(exclude={"id"}, exclude_none=True)
         if appointment.patient:
-            appointment["patient"] = ObjectId(appointment.patient)
+            update_object["patient"] = ObjectId(appointment.patient)
         if appointment.doctor:
-            appointment["doctor"] = ObjectId(appointment.doctor)
+            update_object["doctor"] = ObjectId(appointment.doctor)
         if appointment.date:
-            appointment["date"] = datetime.strptime(appointment.date, "%Y-%m-%d")
+            update_object["date"] = datetime.strptime(appointment.date, "%Y-%m-%d")
         with MongoConnection() as db:
             result = db.appointments.update_one(
                 {"_id": ObjectId(appointment_id)},
-                {"$set":  appointment.model_dump(exclude={"id"}, exclude_none=True)}
+                {"$set":  update_object}
                 
             )
 
