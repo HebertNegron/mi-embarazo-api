@@ -92,7 +92,7 @@ async def whatsapp_webhook(request: Request):
                     doctor_options = [f"{idx}. {x['name']}" for idx, x in enumerate(doctors, start=1)]
                     reply = ("Perfecto, ya estás registrado. Ahora continuemos con el agendado de tu cita.\n"
                             "Estos son los doctores disponibles:\n"
-                            f"{', '.join(doctor_options)}\n"
+                            f"{'\n'.join(doctor_options)}\n"
                             "Por favor, responde con el número del doctor que deseas.")
                     doctor_options_with_id = [f"{idx}. {x['_id']}" for idx, x in enumerate(doctors, start=1)]
                     db.patients.update_one({"current_phone": form_data["From"]},{"$set": {"doctors_options": doctor_options_with_id}})
@@ -177,15 +177,16 @@ async def whatsapp_webhook(request: Request):
                         if patient:
                             db.appointments.insert_one({
                                 "patient": ObjectId(patient["_id"]),
+                                "patient_name": patient["personalData"]["name"],
                                 "file": None,
                                 "doctor": ObjectId(patient["doctor"]),
                                 "date": patient["date"],
                                 "time": horario,
-                                "date_type": "presencial",
+                                "date_type": 'Seguimiento' if patient.get('last_appointment') else 'Nuevo paciente',
                                 "status": "pending"
                             })
                             db.patients.update_one({"current_phone": form_data["From"]},{"$set": {'doctors_options': [], 'horarios_options': [], 'current_phone': None, 'doctor': None, 'date': None}})
-                            reply = f"Tu cita ha sido registrada para el {conversation_state[user_number]['fecha']} a las {horario} con {conversation_state[user_number]['doctor']}. ¡Gracias!"
+                            reply = f"Tu cita ha sido registrada para el {conversation_state[user_number]['fecha']} a las {horario}. ¡Gracias!"
                             del conversation_state[user_number]
                         else:
                             reply = "No pudimos agendar tu cita. Por favor, verifica el número o ID enviado."
