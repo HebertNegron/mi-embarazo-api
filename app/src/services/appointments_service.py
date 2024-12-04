@@ -61,10 +61,17 @@ class AppointmentsService:
             return inserted_document
         
     def update_appointment(self, appointment_id: str, appointment: Appointment) -> dict | None:
+        update_object = appointment.model_dump(exclude={"id", "password"}, exclude_none=True)
+        if appointment.date and isinstance(appointment.date, str):
+           update_object["date"] = datetime.strptime(appointment.date, "%Y-%m-%d")
+        if appointment.doctor:
+            update_object["doctor"] = ObjectId(appointment.doctor)
+        if appointment.patient:
+            update_object["patient"] = ObjectId(appointment.patient)
         with MongoConnection() as db:
             result = db.appointments.update_one(
                 {"_id": ObjectId(appointment_id)},
-                {"$set": appointment.model_dump()}
+                {"$set": update_object}
             )
 
             return {"_id": str(appointment_id)} if result.modified_count == 1 else None

@@ -45,7 +45,7 @@ class Patient(BaseModel):
     current_phone: str | None = None
     doctor_options: list | None = None
     schedule_options: list | None = None
-    doctor: str | None = None
+    doctor: PyObjectId | None = None
     date: str | None = None
     pregnancyData: PregnancyData | None = None
     medicalHistory: MedicalHistory | None = None

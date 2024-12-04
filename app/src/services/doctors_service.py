@@ -1,7 +1,5 @@
 from bson import ObjectId
-from models.pyObjectId import PyObjectId
 from models.doctor import Doctor
-from models.user_model import UserModel
 from utils.mongo_conn import MongoConnection
 from datetime import datetime
 
@@ -16,12 +14,12 @@ class DoctorsService:
     def update_doctor(self, doctor_id: str, doctor: Doctor) -> dict | None:
         update_object = doctor.model_dump(exclude={"id", "password"})
         with MongoConnection() as db:
-            result = db.users.update_one(
+            db.users.update_one(
                 {"_id": ObjectId(doctor_id)},
                 {"$set": update_object}
             )
 
-            return {"_id": str(doctor_id)} if result.modified_count == 1 else None
+            return update_object
         
     def delete_doctor(self, doctor_id: str) -> dict | None:
         with MongoConnection() as db:
