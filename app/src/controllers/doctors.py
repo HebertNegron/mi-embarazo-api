@@ -26,6 +26,12 @@ def get_doctors() -> list[Doctor]:
     doctors: list[Doctor] = DoctorsService().get_doctors()
     return doctors
 
+@doctors_router.get("/{doctor_id}", status_code=status.HTTP_200_OK)
+def get_doctor(doctor_id: str) -> Doctor:
+    doctor: Doctor = DoctorsService().get_doctor(doctor_id)
+
+    return doctor
+
 
 @doctors_router.put("/{doctor_id}", status_code=status.HTTP_200_OK)
 def update_doctor(doctor_id: str, doctor: Doctor) -> dict:

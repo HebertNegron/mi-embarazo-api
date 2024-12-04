@@ -44,10 +44,12 @@ class PatientsService:
             } 
         
     def update_patient(self, patient_id: str, patient: Patient) -> dict | None:
+        if patient.doctor:
+            patient.doctor = ObjectId(patient.doctor) 
         with MongoConnection() as db:
             result = db.patients.update_one(
                 {"_id": ObjectId(patient_id)},
-                {"$set": patient.model_dump()}
+                {"$set": patient.model_dump(exclude={"id"}, exclude_none=True)}
             )
 
             return {"_id": str(patient_id)} if result.modified_count == 1 else None

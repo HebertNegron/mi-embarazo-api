@@ -26,11 +26,6 @@ def get_patients() -> list[Patient]:
 def get_patients_by_doctor(credentials : UserModel = Depends(login_required)) -> list[Patient]:
     patients: list[Patient] | None = PatientsService().get_patients_by_doctor(credentials.id)
 
-    if not patients:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Patient not found",
-        )
     return patients
 
 @patients_router.get("/{patient_id}")
